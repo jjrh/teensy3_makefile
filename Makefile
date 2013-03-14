@@ -63,14 +63,7 @@ SIZE = $(COMPILERPATH)/arm-none-eabi-size
 LOCAL_CPP := $(wildcard *.cpp)
 LOCAL_C := $(wildcard *.c)
 
-PWD = $(shell pwd)
-$(shell rm $(TEENSY_PATH)$(LOCAL_CPP))
-
-$(shell ln -s $(PWD)/$(LOCAL_CPP) $(TEENSY_PATH))
-
-# enable this if you have C files. 
-# $(shell rm $(TEENSY_PATH)$(LOCAL_C))
-# $(shell ln -s $(PWD)/$(LOCAL_C) $(TEENSY_PATH))
+#PWD = $(shell pwd)
 
 # automatically create lists of the sources and objects
 # TODO: this does not handle Arduino libraries yet...
@@ -78,16 +71,10 @@ C_FILES := $(wildcard $(TEENSY_PATH)*.c)$(wildcard *.c)
 # C_FILES := $(wildcard *.c)
 CPP_FILES := $(wildcard $(TEENSY_PATH)*.cpp)$(wildcard *.c)
 # CPP_FILES := $(wildcard *.cpp)
-OBJS := $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o)
-
-# INCLUDES := $(wildcard $(TEENSY_PATH)avr/*.h)
-objects := $(patsubst %.c,%.o,$(wildcard *.c))
+OBJS := $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o) $(LOCAL_CPP:.cpp=.o) $(LOCAL_C:.c=o)
 
 # the actual makefile rules (all .o files built by GNU make's default implicit rules)
 
-test:
-	echo $(PWD)
-	echo $(LOCAL_CPP) $(TEENSY_PATH) 
 all: $(TARGET).hex
 
 $(TARGET).elf: $(OBJS) #mk20dx128.ld
@@ -104,7 +91,7 @@ $(TARGET).elf: $(OBJS) #mk20dx128.ld
 -include $(OBJS:.o=.d)
 
 clean:
-	rm -f $(TEENSY_PATH)*.o $(TEENSY_PATH)*.d $(TEENSY_PATH)$(TARGET).elf $(TEENSY_PATH)$(TARGET).hex
+#	rm -f $(TEENSY_PATH)*.o $(TEENSY_PATH)*.d $(TEENSY_PATH)$(TARGET).elf $(TEENSY_PATH)$(TARGET).hex
 	rm -f *.o *.d $(TARGET).elf $(TARGET).hex
-	rm $(TEENSY_PATH)$(LOCAL_CPP)
+
 
